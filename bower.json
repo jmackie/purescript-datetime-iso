@@ -1,7 +1,7 @@
 {
     "name": "purescript-datetime-iso",
     "homepage": "https://github.com/jmackie4/purescript-datetime-iso",
-    "description": "PureScript library for serializing datetimes",
+    "description": "PureScript library for easily serializing datetimes",
     "license": "MIT",
     "repository": {
         "type": "git",

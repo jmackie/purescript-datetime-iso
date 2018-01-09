@@ -1,0 +1,21 @@
+{
+    "name": "purescript-datetime-iso",
+    "homepage": "https://github.com/jmackie4/purescript-datetime-iso",
+    "description": "PureScript library for serializing datetimes",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/jmackie4/purescript-datetime-iso.git"
+    },
+    "ignore": ["**/.*", "node_modules", "bower_components", "output"],
+    "dependencies": {
+        "purescript-console": "^3.0.0",
+        "purescript-argonaut-codecs": "^3.2.0",
+        "purescript-datetime": "^3.4.1",
+        "purescript-parsing": "^4.3.1",
+        "purescript-newtype": "^2.0.0"
+    },
+    "devDependencies": {
+        "purescript-spec": "^2.0.0"
+    }
+}

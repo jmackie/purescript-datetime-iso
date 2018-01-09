@@ -9,7 +9,6 @@
     },
     "ignore": ["**/.*", "node_modules", "bower_components", "output"],
     "dependencies": {
-        "purescript-console": "^3.0.0",
         "purescript-argonaut-codecs": "^3.2.0",
         "purescript-datetime": "^3.4.1",
         "purescript-parsing": "^4.3.1",

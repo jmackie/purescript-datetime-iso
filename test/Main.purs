@@ -7,11 +7,10 @@ import Control.Monad.Eff (Eff)
 import Data.Argonaut.Core (fromString)
 import Data.Argonaut.Decode (decodeJson)
 import Data.DateTime as DT
-import Data.DateTime.ISO (ISO(..))
+import Data.DateTime.ISO (ISO(..), unwrapISO)
 import Data.Either (Either(..))
 import Data.Enum (class BoundedEnum, toEnum)
 import Data.Maybe (fromJust)
-import Data.Newtype (unwrap)
 
 import Partial.Unsafe (unsafePartial)
 
@@ -30,8 +29,8 @@ main = run [consoleReporter] do
                 case decodeISO "2018-01-09T13:16:43.772Z" of
                     Left err ->
                         fail $ "decoding failed: " <> err
-                    Right dt ->
-                        unwrap dt `shouldEqual`
+                    Right iso ->
+                        unwrapISO iso `shouldEqual`
                             mkDateTime 2018 DT.January 9 13 16 43 772
 
             describe "optional characters" do
@@ -40,42 +39,42 @@ main = run [consoleReporter] do
                     case decodeISO "20180109T13:16:43.772Z" of
                         Left err ->
                             fail $ "decoding failed: " <> err
-                        Right dt ->
-                            unwrap dt `shouldEqual`
+                        Right iso ->
+                            unwrapISO iso `shouldEqual`
                                 mkDateTime 2018 DT.January 9 13 16 43 772
 
                 it "doesn't need colons in the time" do
                     case decodeISO "20180109T131643.772Z" of
                         Left err ->
                             fail $ "decoding failed: " <> err
-                        Right dt ->
-                            unwrap dt `shouldEqual`
+                        Right iso ->
+                            unwrapISO iso `shouldEqual`
                                 mkDateTime 2018 DT.January 9 13 16 43 772
 
             describe "milliseconds" do
 
-                it "handles a zero milliseconds" do
+                it "handles zero milliseconds" do
                     case decodeISO "2018-01-09T13:16:43.0Z" of
                         Left err ->
                             fail $ "decoding failed: " <> err
-                        Right dt ->
-                            unwrap dt `shouldEqual`
+                        Right iso ->
+                            unwrapISO iso `shouldEqual`
                                 mkDateTime 2018 DT.January 9 13 16 43 0
 
                 it "handles empty milliseconds" do
                     case decodeISO "2018-01-09T13:16:43Z" of
                         Left err ->
                             fail $ "decoding failed: " <> err
-                        Right dt ->
-                            unwrap dt `shouldEqual`
+                        Right iso ->
+                            unwrapISO iso `shouldEqual`
                                 mkDateTime 2018 DT.January 9 13 16 43 0
 
                 it "handles milliseconds 0-999" do
                     case decodeISO "2018-01-09T13:16:43.999Z" of
                         Left err ->
                             fail $ "decoding failed: " <> err
-                        Right dt ->
-                            unwrap dt `shouldEqual`
+                        Right iso ->
+                            unwrapISO iso `shouldEqual`
                                 mkDateTime 2018 DT.January 9 13 16 43 999
 
             describe "malformed input" do  -- malformed as far as we're concerned...

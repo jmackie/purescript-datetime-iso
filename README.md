@@ -17,7 +17,7 @@ module Data.Event where
 
 import Prelude
 
-import Data.DateTime.ISO (ISO)
+import Data.DateTime.ISO (ISO, unwrapISO)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson, (.?))
 import Data.DateTime (DateTime)
 import Data.Newtype (unwrap)
@@ -30,9 +30,9 @@ newtype Event = Event
 instance decodeJsonEvent :: DecodeJson Event where
     decodeJson json = do
         obj <- decodeJson json
-        (iso :: ISO) <- obj .? "timestamp"  -- needs unwrapping
+        timestamp <- obj .? "timestamp" <#> unwrapISO
         description <- obj .? "description"
-        pure $ Event { timestamp: unwrap iso, description }
+        pure $ Event { timestamp, description }
 ```
 
 ## Documentation

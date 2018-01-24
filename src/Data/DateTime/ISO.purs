@@ -1,4 +1,4 @@
-module Data.DateTime.ISO (ISO(ISO)) where
+module Data.DateTime.ISO (ISO(..), unwrapISO) where
 
 import Prelude
 
@@ -11,7 +11,7 @@ import Data.DateTime as DT
 import Data.Enum (class BoundedEnum, fromEnum, toEnum)
 import Data.Foldable (class Foldable, foldl)
 import Data.Maybe (Maybe, maybe, fromMaybe)
-import Data.Newtype (class Newtype, wrap)
+import Data.Newtype (class Newtype, wrap, unwrap)
 import Data.String as String
 import Data.Traversable (sequence)
 
@@ -25,6 +25,10 @@ import Text.Parsing.Parser.String as PS
 newtype ISO = ISO DateTime
 
 derive instance newtypeISO :: Newtype ISO _
+
+-- | A monomorphic `unwrap`.
+unwrapISO :: ISO -> DateTime
+unwrapISO = unwrap
 
 instance showISO :: Show ISO where
     show (ISO (DateTime date time)) = foldl append ""

@@ -1,8 +1,7 @@
 # purescript-datetime-iso
 
-<a href="https://pursuit.purescript.org/packages/purescript-datetime-iso">
-    <img src="https://pursuit.purescript.org/packages/purescript-datetime-iso/badge"
-            alt="purescript-datetime-iso on Pursuit" /></a>
+[![Pursuit version](https://pursuit.purescript.org/packages/purescript-datetime-iso/badge)](https://pursuit.purescript.org/packages/purescript-datetime-iso)
+[![Build status](https://travis-ci.org/jmackie4/purescript-datetime-iso.svg?branch=master)](https://travis-ci.org/jmackie4/purescript-datetime-iso)
 
 ## Description
 

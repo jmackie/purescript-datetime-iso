@@ -9,3 +9,7 @@ install:
 script:
     - npm run -s build
     - npm run -s test
+notifications:
+    email:
+        on_success: never
+        on_failure: always

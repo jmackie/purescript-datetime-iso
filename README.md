@@ -4,6 +4,10 @@
 ![Current tag](https://img.shields.io/github/tag/jmackie4/purescript-datetime-iso.svg)
 [![Build status](https://travis-ci.org/jmackie4/purescript-datetime-iso.svg?branch=master)](https://travis-ci.org/jmackie4/purescript-datetime-iso)
 
+```
+2018-01-31T20:15:40.343Z
+```
+
 ## Description
 
 Provides a minimal [`DateTime`](https://github.com/purescript/purescript-datetime/)  wrapper that encodes/decodes to/from the *simplified* extended ISO format ([`ISO 8601`](https://en.wikipedia.org/wiki/ISO_8601)); specifically `YYYY-MM-DDTHH:mm:ss[.sss]Z` where hyphens and colons can be omitted.

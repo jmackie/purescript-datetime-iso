@@ -10,6 +10,7 @@ import Data.DateTime (DateTime(..), Date, Time)
 import Data.DateTime as DT
 import Data.Enum (class BoundedEnum, fromEnum, toEnum)
 import Data.Foldable (class Foldable, foldl)
+import Data.Int as Int
 import Data.Maybe (Maybe, maybe, fromMaybe)
 import Data.Newtype (class Newtype, wrap, unwrap)
 import Data.String as String
@@ -89,11 +90,14 @@ parseISOTime = do
     -- NOTE: milliseconds may not be present
     ms <- PC.option bottom $
                 PC.try (PS.char '.') *> Array.some parseDigit
-                    <#> foldDigits >>> toEnum >>> fromMaybe top
-                    --    NOTE: truncate large milliseconds ^^^
+                    <#> foldDigits >>> truncate >>> toEnum >>> fromMaybe top
     pure $ DT.Time hh mm ss ms
 
-    where colon = PC.optional $ PC.try $ PS.char ':'
+    where
+        colon = PC.optional $ PC.try $ PS.char ':'
+        -- NOTE: only first three digits are kept
+        truncate n =
+            fromMaybe n $ Int.fromString $ String.take 3 $ show n <> "000"
 
 parseDigits :: forall s m. Monad m => PS.StringLike s => Int -> P.ParserT s m Int
 parseDigits = map foldDigits <<< sequence <<< flip Array.replicate parseDigit

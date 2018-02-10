@@ -77,6 +77,14 @@ main = run [consoleReporter] do
                             unwrapISO iso `shouldEqual`
                                 mkDateTime 2018 DT.January 9 13 16 43 999
 
+                it "handles more than 3 digits second fraction" do
+                    case decodeISO "2018-01-09T13:16:43.1234Z" of
+                        Left err ->
+                            fail $ "decoding failed: " <> err
+                        Right iso ->
+                            show iso `shouldEqual`
+                                "2018-01-09T13:16:43.123Z"
+
             describe "malformed input" do  -- malformed as far as we're concerned...
 
                 it "fails if not YYYY MM DD" do

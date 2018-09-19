@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
+import Effect (Effect)
 
 import Data.Argonaut.Core (fromString)
 import Data.Argonaut.Decode (decodeJson)
@@ -17,9 +17,9 @@ import Partial.Unsafe (unsafePartial)
 import Test.Spec (describe, it)
 import Test.Spec.Assertions (fail, shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
-import Test.Spec.Runner (RunnerEffects, run)
+import Test.Spec.Runner (run)
 
-main :: Eff (RunnerEffects ()) Unit
+main :: Effect Unit
 main = run [consoleReporter] do
     describe "purescript-datetime-iso" do
 

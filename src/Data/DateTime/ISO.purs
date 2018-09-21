@@ -13,7 +13,7 @@ import Data.Foldable (class Foldable, foldl)
 import Data.Int as Int
 import Data.Maybe (Maybe, maybe, fromMaybe)
 import Data.Newtype (class Newtype, wrap, unwrap)
-import Data.String as String
+import Data.String (length, take) as String
 import Data.String.CodeUnits (fromCharArray, toCharArray) as String
 import Data.Traversable (sequence)
 

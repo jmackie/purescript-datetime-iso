@@ -14,7 +14,7 @@ import Data.Int as Int
 import Data.Maybe (Maybe, maybe, fromMaybe)
 import Data.Newtype (class Newtype, wrap, unwrap)
 import Data.String as String
-import Data.String.CodeUnits as SCU
+import Data.String.CodeUnits (fromCharArray, toCharArray) as String
 import Data.Traversable (sequence)
 
 import Text.Parsing.Parser as P
@@ -126,11 +126,10 @@ maybeFail :: forall m s a. Monad m => String -> Maybe a -> P.ParserT s m a
 maybeFail str = maybe (P.fail str) pure
 
 padl :: Int -> Char -> String -> String
-padl n chr str = SCU.fromCharArray $
-    padl' (n - String.length str) chr (SCU.toCharArray str)
+padl n chr str = String.fromCharArray $
+    padl' (n - String.length str) chr (String.toCharArray str)
 
 padl' :: Int -> Char -> Array Char -> Array Char
 padl' n chr chrs
     | n <= 0 = chrs
     | otherwise = padl' (n - 1) chr (chr `Array.cons` chrs)
-

@@ -10,7 +10,7 @@
     "ignore": ["**/.*", "node_modules", "bower_components", "output"],
     "dependencies": {
         "purescript-prelude": "^4.1.0",
-        "purescript-argonaut-codecs": "^4.0.2",
+        "purescript-argonaut-codecs": "^5.1.0",
         "purescript-datetime": "^4.0.0",
         "purescript-parsing": "^5.0.1",
         "purescript-newtype": "^3.0.0"

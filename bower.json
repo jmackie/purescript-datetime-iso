@@ -9,13 +9,12 @@
     },
     "ignore": ["**/.*", "node_modules", "bower_components", "output"],
     "dependencies": {
-        "purescript-prelude": "^4.1.0",
-        "purescript-argonaut-codecs": "^5.1.0",
-        "purescript-datetime": "^4.0.0",
-        "purescript-parsing": "^5.0.1",
+        "purescript-argonaut-codecs": "^6.0.0",
+        "purescript-datetime": "^4.1.1",
+        "purescript-parsing": "^5.0.3",
         "purescript-newtype": "^3.0.0"
     },
     "devDependencies": {
-        "purescript-spec": "^3.0.0"
+        "purescript-spec": "^4.0.0"
     }
 }

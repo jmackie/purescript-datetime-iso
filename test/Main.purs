@@ -2,8 +2,6 @@ module Test.Main where
 
 import Prelude
 
-import Effect (Effect)
-
 import Data.Argonaut.Core (fromString)
 import Data.Argonaut.Decode (decodeJson)
 import Data.DateTime as DT
@@ -11,16 +9,16 @@ import Data.DateTime.ISO (ISO(..), unwrapISO)
 import Data.Either (Either(..))
 import Data.Enum (class BoundedEnum, toEnum)
 import Data.Maybe (fromJust)
-
+import Effect (Effect)
+import Effect.Aff (launchAff_)
 import Partial.Unsafe (unsafePartial)
-
 import Test.Spec (describe, it)
 import Test.Spec.Assertions (fail, shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
-import Test.Spec.Runner (run)
+import Test.Spec.Runner (runSpec)
 
 main :: Effect Unit
-main = run [consoleReporter] do
+main = launchAff_ $ runSpec [consoleReporter] do
     describe "purescript-datetime-iso" do
 
         describe "decoding" do

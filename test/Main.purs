@@ -83,6 +83,38 @@ main = launchAff_ $ runSpec [consoleReporter] do
                             show iso `shouldEqual`
                                 "2018-01-09T13:16:43.123Z"
 
+                it "handles milliseconds with one leading zero" do
+                    case decodeISO "2018-01-09T03:16:43.034Z" of
+                        Left err ->
+                            fail $ "decoding failed: " <> err
+                        Right iso ->
+                            unwrapISO  iso `shouldEqual`
+                                mkDateTime 2018 DT.January 9 3 16 43 34
+
+                it "handles milliseconds with two leading zeros" do
+                    case decodeISO "2018-01-09T13:06:33.002Z" of
+                        Left err ->
+                            fail $ "decoding failed: " <> err
+                        Right iso ->
+                            show iso `shouldEqual`
+                                "2018-01-09T13:06:33.002Z"
+
+                it "handles two digit milliseconds with leading zero" do
+                    case decodeISO "2018-01-09T13:26:03.07Z" of
+                        Left err ->
+                            fail $ "decoding failed: " <> err
+                        Right iso ->
+                            show iso `shouldEqual`
+                                "2018-01-09T13:26:03.07Z"
+
+                it "handles two digit milliseconds with leading and trailing zero" do
+                    case decodeISO "2018-01-09T13:06:03.070Z" of
+                        Left err ->
+                            fail $ "decoding failed: " <> err
+                        Right iso ->
+                            show iso `shouldEqual`
+                                "2018-01-09T13:06:03.07Z"
+
             describe "malformed input" do  -- malformed as far as we're concerned...
 
                 it "fails if not YYYY MM DD" do
@@ -108,6 +140,18 @@ main = launchAff_ $ runSpec [consoleReporter] do
             it "explicitly prints zero milliseconds" do
                 let dt = mkDateTime 2018 DT.January 9 13 16 43 0
                 show (ISO dt) `shouldEqual` "2018-01-09T13:16:43.0Z"
+
+            it "prints milliseconds with two leading zeros" do
+                let dt = mkDateTime 2018 DT.January 9 13 16 43 3
+                show (ISO dt) `shouldEqual` "2018-01-09T13:16:43.003Z"
+
+            it "prints milliseconds with one leading zero" do
+                let dt = mkDateTime 2018 DT.January 9 13 16 43 40
+                show (ISO dt) `shouldEqual` "2018-01-09T13:16:43.04Z"
+
+            it "removes unneeded zeros from end of milliseconds" do
+                let dt = mkDateTime 2018 DT.January 9 13 16 43 840
+                show (ISO dt) `shouldEqual` "2018-01-09T13:16:43.84Z"
 
 decodeISO :: String -> Either String ISO
 decodeISO = fromString >>> decodeJson

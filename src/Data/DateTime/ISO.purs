@@ -6,14 +6,14 @@ import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Array as Array
 import Data.Bifunctor (lmap)
-import Data.DateTime (DateTime(..), Date, Time)
+import Data.DateTime (DateTime(..), Date, Millisecond, Time)
 import Data.DateTime as DT
 import Data.Enum (class BoundedEnum, fromEnum, toEnum)
-import Data.Foldable (class Foldable, foldl)
-import Data.Int as Int
+import Data.Foldable (class Foldable, foldl, length)
 import Data.Maybe (Maybe, maybe, fromMaybe)
 import Data.Newtype (class Newtype, wrap, unwrap)
-import Data.String (length, take) as String
+import Data.String (fromCodePointArray, codePointFromChar, toCodePointArray)
+import Data.String (length) as String
 import Data.String.CodeUnits (fromCharArray, toCharArray) as String
 import Data.Traversable (sequence)
 
@@ -46,12 +46,27 @@ instance showISO :: Show ISO where
         , ":"
         , padl 2 '0' $ showInt $ DT.second time
         , "."
-        , showInt $ DT.millisecond time
+        , removeTrailingZeros $ padMilli $ DT.millisecond time
         , "Z"
         ]
         where
             showInt :: forall a. BoundedEnum a => a -> String
             showInt = show <<< fromEnum
+
+-- | Pad an integer from a millisecond value with enough zeros so it is three
+-- digits.
+padMilli :: Millisecond -> String
+padMilli = padl 3 '0' <<< show <<< fromEnum
+
+-- | Remove trailing zeros from a millisecond value.
+removeTrailingZeros :: String -> String
+removeTrailingZeros "000" = "0"
+removeTrailingZeros s =
+  fromCodePointArray <<<
+  Array.reverse <<<
+  Array.dropWhile (_ == codePointFromChar '0') <<<
+  Array.reverse $
+  toCodePointArray s
 
 instance decodeJsonISO :: DecodeJson ISO where
     decodeJson = decodeJson
@@ -90,15 +105,16 @@ parseISOTime = do
     ss <- parseDigits 2 <#> toEnum >>= maybeFail "bad second"
     -- NOTE: milliseconds may not be present
     ms <- PC.option bottom $
-                PC.try (PS.char '.') *> Array.some parseDigit
-                    <#> foldDigits >>> truncate >>> toEnum >>> fromMaybe top
+                PC.try (PS.char '.') *> Array.some parseDigit <#> doMilli
     pure $ DT.Time hh mm ss ms
-
     where
         colon = PC.optional $ PC.try $ PS.char ':'
-        -- NOTE: only first three digits are kept
-        truncate n =
-            fromMaybe n $ Int.fromString $ String.take 3 $ show n <> "000"
+
+-- | Parse an array of three integers into a `Millisecond` value.
+doMilli :: Array Int -> Millisecond
+doMilli ns =
+  let padded = Array.take 3 $ ns <> Array.replicate (3 - length ns) 0
+  in fromMaybe top $ toEnum $ foldDigits padded
 
 parseDigits :: forall s m. Monad m => PS.StringLike s => Int -> P.ParserT s m Int
 parseDigits = map foldDigits <<< sequence <<< flip Array.replicate parseDigit

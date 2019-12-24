@@ -26,6 +26,8 @@ import Text.Parsing.Parser.String as PS
 -- | Specifically `YYYY-MM-DDTHH:mm:ss[.sss]Z` where hyphens and colons can be omitted.
 newtype ISO = ISO DateTime
 
+derive instance eqISO :: Eq ISO
+derive instance ordISO :: Ord ISO
 derive instance newtypeISO :: Newtype ISO _
 
 -- | A monomorphic `unwrap`.

@@ -3,7 +3,7 @@ module Test.Main where
 import Prelude
 
 import Data.Argonaut.Core (fromString)
-import Data.Argonaut.Decode (decodeJson)
+import Data.Argonaut.Decode (JsonDecodeError, decodeJson)
 import Data.DateTime as DT
 import Data.DateTime.ISO (ISO(..), unwrapISO)
 import Data.Either (Either(..))
@@ -26,7 +26,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
             it "decodes standard js ISO strings (ala Date.prototype.toISOString)" do
                 case decodeISO "2018-01-09T13:16:43.772Z" of
                     Left err ->
-                        fail $ "decoding failed: " <> err
+                        fail $ "decoding failed: " <> show err
                     Right iso ->
                         unwrapISO iso `shouldEqual`
                             mkDateTime 2018 DT.January 9 13 16 43 772
@@ -36,7 +36,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
                 it "doesn't need hyphens in the date" do
                     case decodeISO "20180109T13:16:43.772Z" of
                         Left err ->
-                            fail $ "decoding failed: " <> err
+                            fail $ "decoding failed: " <> show err
                         Right iso ->
                             unwrapISO iso `shouldEqual`
                                 mkDateTime 2018 DT.January 9 13 16 43 772
@@ -44,7 +44,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
                 it "doesn't need colons in the time" do
                     case decodeISO "20180109T131643.772Z" of
                         Left err ->
-                            fail $ "decoding failed: " <> err
+                            fail $ "decoding failed: " <> show err
                         Right iso ->
                             unwrapISO iso `shouldEqual`
                                 mkDateTime 2018 DT.January 9 13 16 43 772
@@ -54,7 +54,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
                 it "handles zero milliseconds" do
                     case decodeISO "2018-01-09T13:16:43.0Z" of
                         Left err ->
-                            fail $ "decoding failed: " <> err
+                            fail $ "decoding failed: " <> show err
                         Right iso ->
                             unwrapISO iso `shouldEqual`
                                 mkDateTime 2018 DT.January 9 13 16 43 0
@@ -62,7 +62,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
                 it "handles empty milliseconds" do
                     case decodeISO "2018-01-09T13:16:43Z" of
                         Left err ->
-                            fail $ "decoding failed: " <> err
+                            fail $ "decoding failed: " <> show err
                         Right iso ->
                             unwrapISO iso `shouldEqual`
                                 mkDateTime 2018 DT.January 9 13 16 43 0
@@ -70,7 +70,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
                 it "handles milliseconds 0-999" do
                     case decodeISO "2018-01-09T13:16:43.999Z" of
                         Left err ->
-                            fail $ "decoding failed: " <> err
+                            fail $ "decoding failed: " <> show err
                         Right iso ->
                             unwrapISO iso `shouldEqual`
                                 mkDateTime 2018 DT.January 9 13 16 43 999
@@ -78,7 +78,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
                 it "handles more than 3 digits second fraction" do
                     case decodeISO "2018-01-09T13:16:43.1234Z" of
                         Left err ->
-                            fail $ "decoding failed: " <> err
+                            fail $ "decoding failed: " <> show err
                         Right iso ->
                             show iso `shouldEqual`
                                 "2018-01-09T13:16:43.123Z"
@@ -86,7 +86,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
                 it "handles milliseconds with one leading zero" do
                     case decodeISO "2018-01-09T03:16:43.034Z" of
                         Left err ->
-                            fail $ "decoding failed: " <> err
+                            fail $ "decoding failed: " <> show err
                         Right iso ->
                             unwrapISO  iso `shouldEqual`
                                 mkDateTime 2018 DT.January 9 3 16 43 34
@@ -94,7 +94,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
                 it "handles milliseconds with two leading zeros" do
                     case decodeISO "2018-01-09T13:06:33.002Z" of
                         Left err ->
-                            fail $ "decoding failed: " <> err
+                            fail $ "decoding failed: " <> show err
                         Right iso ->
                             show iso `shouldEqual`
                                 "2018-01-09T13:06:33.002Z"
@@ -102,7 +102,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
                 it "handles two digit milliseconds with leading zero" do
                     case decodeISO "2018-01-09T13:26:03.07Z" of
                         Left err ->
-                            fail $ "decoding failed: " <> err
+                            fail $ "decoding failed: " <> show err
                         Right iso ->
                             show iso `shouldEqual`
                                 "2018-01-09T13:26:03.07Z"
@@ -110,7 +110,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
                 it "handles two digit milliseconds with leading and trailing zero" do
                     case decodeISO "2018-01-09T13:06:03.070Z" of
                         Left err ->
-                            fail $ "decoding failed: " <> err
+                            fail $ "decoding failed: " <> show err
                         Right iso ->
                             show iso `shouldEqual`
                                 "2018-01-09T13:06:03.07Z"
@@ -153,7 +153,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
                 let dt = mkDateTime 2018 DT.January 9 13 16 43 840
                 show (ISO dt) `shouldEqual` "2018-01-09T13:16:43.84Z"
 
-decodeISO :: String -> Either String ISO
+decodeISO :: String -> Either JsonDecodeError ISO
 decodeISO = fromString >>> decodeJson
 
 -- Helper function for constructing DateTimes.

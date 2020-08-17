@@ -3,6 +3,7 @@ module Data.DateTime.ISO (ISO(..), unwrapISO) where
 import Prelude
 
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Array as Array
 import Data.Bifunctor (lmap)
@@ -71,7 +72,7 @@ removeTrailingZeros s =
 instance decodeJsonISO :: DecodeJson ISO where
     decodeJson = decodeJson
              >=> flip P.runParser (parseISO :: P.Parser String ISO)
-             >>> lmap P.parseErrorMessage
+             >>> lmap (P.parseErrorMessage >>> TypeMismatch)
 
 instance encodeJsonISO :: EncodeJson ISO where
     encodeJson = show >>> encodeJson

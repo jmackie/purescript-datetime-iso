@@ -2,10 +2,9 @@ module Test.Main where
 
 import Prelude
 
-import Data.Argonaut.Core (fromString)
-import Data.Argonaut.Decode (decodeJson)
+import Data.Bifunctor (lmap)
 import Data.DateTime as DT
-import Data.DateTime.ISO (ISO(..), unwrapISO)
+import Data.DateTime.ISO (ISO(..), parseISO, unwrapISO)
 import Data.Either (Either(..))
 import Data.Enum (class BoundedEnum, toEnum)
 import Data.Maybe (fromJust)
@@ -16,6 +15,7 @@ import Test.Spec (describe, it)
 import Test.Spec.Assertions (fail, shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
+import Text.Parsing.Parser (parseErrorMessage, runParser)
 
 main :: Effect Unit
 main = launchAff_ $ runSpec [consoleReporter] do
@@ -154,7 +154,7 @@ main = launchAff_ $ runSpec [consoleReporter] do
                 show (ISO dt) `shouldEqual` "2018-01-09T13:16:43.84Z"
 
 decodeISO :: String -> Either String ISO
-decodeISO = fromString >>> decodeJson
+decodeISO s = lmap parseErrorMessage $ runParser s parseISO
 
 -- Helper function for constructing DateTimes.
 mkDateTime
